@@ -1,0 +1,11 @@
+.ssh/
+*.pyc
+__pycache__/
+.venv/
+.env
+*.log
+.vscode/
+.DS_Store
+*.egg-info/
+dist/
+build/
