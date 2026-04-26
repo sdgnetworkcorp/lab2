@@ -69,9 +69,9 @@ def connect_linux(host, username, key_file=None, password=None):
 def main():
     parser = argparse.ArgumentParser(description="SSH to network devices")
     parser.add_argument('--host', default='192.168.1.1', help='Device IP/hostname')
-    parser.add_argument('--username', default='sgutierez', help='Username')
-    parser.add_argument('--password', help='Password for keyboard-interactive auth (will prompt if not provided)')
-    parser.add_argument('--key-file', default=r'C:/Users/sandy/.ssh/unifi_key', help='Private key file path')
+    parser.add_argument('--username', help='Username')
+    parser.add_argument('--password', help='Password for authentication')
+    parser.add_argument('--key-file', help='Private key file path')
     parser.add_argument('--device-type', help='Device type (will prompt if not provided)')
     
     args = parser.parse_args()
@@ -79,20 +79,21 @@ def main():
     host = args.host
     username = args.username
     password = args.password
-    key_file_path = os.path.expanduser(args.key_file)
+    key_file_path = args.key_file
     device_type = args.device_type
+    
+    if not username:
+        username = input("Enter username: ")
+    if not password:
+        password = getpass.getpass("Enter password: ")
     
     if not device_type:
         device_type = get_device_type()
     
-    ssh_key_exists = os.path.exists(key_file_path)
-    if not password and not ssh_key_exists:
-        raise FileNotFoundError(f"SSH key file not found and no password provided: {key_file_path}")
-    
     try:
         print(f"Connecting to {host} ({device_type})...")
         if device_type == 'linux':
-            ssh = connect_linux(host, username, key_file_path if ssh_key_exists else None, password)
+            ssh = connect_linux(host, username, key_file_path if key_file_path else None, password)
             print("Connected successfully!")
             while True:
                 command = input("Enter command (or 'exit' to quit): ")
@@ -110,15 +111,11 @@ def main():
                 'device_type': device_type,
                 'host': host,
                 'username': username,
+                'password': password,
+                'use_keys': False,
                 'allow_agent': False,
                 'auth_timeout': 30,
             }
-            if password:
-                device['password'] = password
-                device['use_keys'] = False
-            elif ssh_key_exists:
-                device['key_file'] = key_file_path
-                device['use_keys'] = True
             net_connect = ConnectHandler(**device)
             if device_type in ['cisco_ios', 'cisco_xe', 'cisco_xr', 'cisco_wlc']:
                 net_connect.enable()
