@@ -68,9 +68,9 @@ def connect_linux(host, username, key_file=None, password=None):
 
 def main():
     parser = argparse.ArgumentParser(description="SSH to network devices")
-    parser.add_argument('--host', default='192.168.1.1', help='Device IP/hostname')
-    parser.add_argument('--username', help='Username')
-    parser.add_argument('--password', help='Password for authentication')
+    parser.add_argument('--host', required=True, help='Device IP/hostname')
+    parser.add_argument('--username', required=True, help='Username')
+    parser.add_argument('--password', required=True, help='Password for authentication')
     parser.add_argument('--key-file', help='Private key file path')
     parser.add_argument('--device-type', help='Device type (will prompt if not provided)')
     
@@ -81,11 +81,6 @@ def main():
     password = args.password
     key_file_path = args.key_file
     device_type = args.device_type
-    
-    if not username:
-        username = input("Enter username: ")
-    if not password:
-        password = getpass.getpass("Enter password: ")
     
     if not device_type:
         device_type = get_device_type()
