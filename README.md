@@ -14,22 +14,17 @@ This is a Python script to connect to various network devices via SSH using the 
    pip install -r requirements.txt
    ```
 
-2. Run the script:
+2. Run the script with required arguments:
    ```
-   python cisco_ssh.py
+   python cisco_ssh.py --host <device_ip> --username <username> --password <password> --device-type <type>
    ```
-   Or with command line arguments:
+   Example:
    ```
-   python cisco_ssh.py --host 192.168.1.1 --username sgutierez --device-type linux
+   python cisco_ssh.py --host 10.0.0.1 --username admin --password mypass --device-type cisco_ios
    ```
    (Device type will be prompted if not provided)
 
-3. Run the script (no password needed with key auth):
-   ```
-   python cisco_ssh.py --device-type linux
-   ```
-
-4. Once connected, you can enter Cisco commands interactively.
+3. Once connected, you can enter commands interactively.
    - Type commands appropriate for the device type
    - Type `exit` to disconnect and quit.
 
